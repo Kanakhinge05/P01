@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Hub - AWS, Git & Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00FF88;
+            --secondary: #00D4FF;
+            --dark: #0A0E27;
+            --darker: #05070F;
+            --accent: #FF6B35;
+            --text: #E8ECEF;
+            --text-dim: #8B92A8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background grid */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            padding: 2rem 0;
+            position: sticky;
+            top: 0;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+            to { text-shadow: 0 0 30px rgba(0, 255, 136, 0.8), 0 0 40px rgba(0, 255, 136, 0.4); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 0 6rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-dim);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            animation: slideUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--primary);
+            color: var(--darker);
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+            animation: slideUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.5);
+        }
+
+        /* Section Styling */
+        section {
+            padding: 6rem 0;
+            position: relative;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.2);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .card p {
+            color: var(--text-dim);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .card li {
+            padding: 0.5rem 0;
+            color: var(--text-dim);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .card li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        /* AWS Section */
+        .aws-services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .service-tag {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .service-tag:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        /* DevOps Tools Section */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .tool-item {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 107, 53, 0.05);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .tool-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 107, 53, 0.1);
+            border-color: var(--accent);
+        }
+
+        .tool-item h4 {
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            color: var(--accent);
+        }
+
+        .tool-icon {
+            font-size: 2.5rem;
+        }
+
+        /* Git Commands Section */
+        .command-block {
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .command-block code {
+            color: var(--primary);
+        }
+
+        .command-desc {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Timeline for Git Workflow */
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+            margin-top: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -3.6rem;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid var(--darker);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .timeline-item h4 {
+            font-size: 1.3rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            margin-top: 2rem;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        th {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        td {
+            color: var(--text-dim);
+        }
+
+        tr:hover {
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 0 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(0, 255, 136, 0.1);
+            margin-top: 6rem;
+        }
+
+        footer p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 4rem 0 3rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            section {
+                padding: 3rem 0;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline {
+                padding-left: 2rem;
+            }
+
+            .timeline-item::before {
+                left: -2.6rem;
+            }
+        }
+
+        /* Scroll Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Add stagger to children */
+        .cards-grid .card:nth-child(1) { animation-delay: 0.1s; }
+        .cards-grid .card:nth-child(2) { animation-delay: 0.2s; }
+        .cards-grid .card:nth-child(3) { animation-delay: 0.3s; }
+        .cards-grid .card:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">&lt;/DevOps Hub&gt;</div>
+                <ul class="nav-links">
+                    <li><a href="#aws">AWS</a></li>
+                    <li><a href="#devops">DevOps Tools</a></li>
+                    <li><a href="#git">Git</a></li>
+                    <li><a href="#github">GitHub</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Master Cloud & DevOps</h1>
+                <p>Your comprehensive guide to AWS, DevOps tools, Git, and GitHub. Build, deploy, and scale modern applications with confidence.</p>
+                <a href="#aws" class="cta-button">Start Learning →</a>
+            </div>
+        </section>
+
+        <!-- AWS Section -->
+        <section id="aws">
+            <div class="container">
+                <h2>Amazon Web Services (AWS)</h2>
+                <p style="color: var(--text-dim); max-width: 900px; font-size: 1.1rem; margin-bottom: 3rem;">
+                    AWS is the world's most comprehensive cloud platform, offering over 200 fully featured services from data centers globally. Build, deploy, and manage applications with unmatched flexibility and scalability.
+                </p>
+
+                <div class="cards-grid">
+                    <div class="card fade-in">
+                        <div class="card-icon">☁️</div>
+                        <h3>Compute Services</h3>
+                        <p>Powerful computing resources on demand</p>
+                        <ul>
+                            <li><strong>EC2</strong> - Virtual servers in the cloud</li>
+                            <li><strong>Lambda</strong> - Serverless compute</li>
+                            <li><strong>ECS/EKS</strong> - Container orchestration</li>
+                            <li><strong>Elastic Beanstalk</strong> - Application deployment</li>
+                        </ul>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">💾</div>
+                        <h3>Storage Solutions</h3>
+                        <p>Scalable and durable data storage</p>
+                        <ul>
+                            <li><strong>S3</strong> - Object storage service</li>
+                            <li><strong>EBS</strong> - Block storage volumes</li>
+                            <li><strong>EFS</strong> - Elastic file system</li>
+                            <li><strong>Glacier</strong> - Long-term archival</li>
+                        </ul>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">🗄️</div>
+                        <h3>Database Services</h3>
+                        <p>Managed database solutions</p>
+                        <ul>
+                            <li><strong>RDS</strong> - Relational databases</li>
+                            <li><strong>DynamoDB</strong> - NoSQL database</li>
+                            <li><strong>Aurora</strong> - MySQL/PostgreSQL compatible</li>
+                            <li><strong>ElastiCache</strong> - In-memory caching</li>
+                        </ul>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">🌐</div>
+                        <h3>Networking & Content</h3>
+                        <p>Connect and deliver with speed</p>
+                        <ul>
+                            <li><strong>VPC</strong> - Virtual private cloud</li>
+                            <li><strong>CloudFront</strong> - CDN service</li>
+                            <li><strong>Route 53</strong> - DNS service</li>
+                            <li><strong>API Gateway</strong> - API management</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 4rem; font-size: 1.8rem; color: var(--secondary);">Popular AWS Services</h3>
+                <div class="aws-services">
+                    <div class="service-tag">EC2</div>
+                    <div class="service-tag">S3</div>
+                    <div class="service-tag">Lambda</div>
+                    <div class="service-tag">RDS</div>
+                    <div class="service-tag">DynamoDB</div>
+                    <div class="service-tag">CloudWatch</div>
+                    <div class="service-tag">IAM</div>
+                    <div class="service-tag">CloudFormation</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DevOps Tools Section -->
+        <section id="devops" style="background: rgba(255, 107, 53, 0.02);">
+            <div class="container">
+                <h2>DevOps Tools Ecosystem</h2>
+                <p style="color: var(--text-dim); max-width: 900px; font-size: 1.1rem; margin-bottom: 3rem;">
+                    DevOps combines development and operations to shorten the development lifecycle and deliver high-quality software continuously. Master these essential tools to streamline your workflow.
+                </p>
+
+                <div class="cards-grid">
+                    <div class="card fade-in">
+                        <div class="card-icon">🐳</div>
+                        <h3>Containerization</h3>
+                        <p><strong>Docker</strong> - Package applications with all dependencies into containers for consistent deployment across environments.</p>
+                        <p style="margin-top: 1rem;"><strong>Kubernetes</strong> - Orchestrate and manage containerized applications at scale with automated deployment, scaling, and operations.</p>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">🔄</div>
+                        <h3>CI/CD Pipelines</h3>
+                        <p><strong>Jenkins</strong> - Open-source automation server for building, testing, and deploying code.</p>
+                        <p style="margin-top: 1rem;"><strong>GitHub Actions</strong> - Automate workflows directly from your GitHub repository with powerful CI/CD capabilities.</p>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">🏗️</div>
+                        <h3>Infrastructure as Code</h3>
+                        <p><strong>Terraform</strong> - Define and provision infrastructure using declarative configuration files across multiple cloud providers.</p>
+                        <p style="margin-top: 1rem;"><strong>Ansible</strong> - Simple automation for configuration management and application deployment.</p>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">📊</div>
+                        <h3>Monitoring & Logging</h3>
+                        <p><strong>Prometheus & Grafana</strong> - Collect metrics and visualize system performance with beautiful dashboards.</p>
+                        <p style="margin-top: 1rem;"><strong>ELK Stack</strong> - Elasticsearch, Logstash, and Kibana for centralized logging and analysis.</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 4rem; font-size: 1.8rem; color: var(--accent);">Essential DevOps Tools</h3>
+                <div class="tools-grid">
+                    <div class="tool-item">
+                        <div class="tool-icon">🐳</div>
+                        <h4>Docker</h4>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon">☸️</div>
+                        <h4>Kubernetes</h4>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon">🔧</div>
+                        <h4>Jenkins</h4>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon">🌍</div>
+                        <h4>Terraform</h4>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon">📡</div>
+                        <h4>Ansible</h4>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-icon">📊</div>
+                        <h4>Grafana</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Git Section -->
+        <section id="git">
+            <div class="container">
+                <h2>Git Version Control</h2>
+                <p style="color: var(--text-dim); max-width: 900px; font-size: 1.1rem; margin-bottom: 3rem;">
+                    Git is a distributed version control system that tracks changes in source code during software development. It enables collaboration, maintains history, and allows you to work on multiple features simultaneously.
+                </p>
+
+                <div class="cards-grid">
+                    <div class="card fade-in">
+                        <div class="card-icon">🔀</div>
+                        <h3>Core Concepts</h3>
+                        <ul>
+                            <li><strong>Repository</strong> - Storage for your project and its history</li>
+                            <li><strong>Commit</strong> - Snapshot of your changes</li>
+                            <li><strong>Branch</strong> - Independent line of development</li>
+                            <li><strong>Merge</strong> - Combine changes from different branches</li>
+                            <li><strong>Remote</strong> - Version of your repo hosted elsewhere</li>
+                        </ul>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">⚡</div>
+                        <h3>Essential Commands</h3>
+                        <div class="command-block">
+                            <code>git init</code>
+                            <div class="command-desc">Initialize a new Git repository</div>
+                        </div>
+                        <div class="command-block">
+                            <code>git clone &lt;url&gt;</code>
+                            <div class="command-desc">Clone a remote repository</div>
+                        </div>
+                        <div class="command-block">
+                            <code>git add .</code>
+                            <div class="command-desc">Stage all changes for commit</div>
+                        </div>
+                        <div class="command-block">
+                            <code>git commit -m "message"</code>
+                            <div class="command-desc">Commit staged changes with message</div>
+                        </div>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">🌳</div>
+                        <h3>Branching & Merging</h3>
+                        <div class="command-block">
+                            <code>git branch &lt;name&gt;</code>
+                            <div class="command-desc">Create a new branch</div>
+                        </div>
+                        <div class="command-block">
+                            <code>git checkout &lt;branch&gt;</code>
+                            <div class="command-desc">Switch to a different branch</div>
+                        </div>
+                        <div class="command-block">
+                            <code>git merge &lt;branch&gt;</code>
+                            <div class="command-desc">Merge branch into current branch</div>
+                        </div>
+                        <div class="command-block">
+                            <code>git pull</code>
+                            <div class="command-desc">Fetch and merge remote changes</div>
+                        </div>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">🚀</div>
+                        <h3>Remote Operations</h3>
+                        <div class="command-block">
+                            <code>git remote add origin &lt;url&gt;</code>
+                            <div class="command-desc">Connect to a remote repository</div>
+                        </div>
+                        <div class="command-block">
+                            <code>git push origin &lt;branch&gt;</code>
+                            <div class="command-desc">Push commits to remote</div>
+                        </div>
+                        <div class="command-block">
+                            <code>git fetch</code>
+                            <div class="command-desc">Download remote changes</div>
+                        </div>
+                        <div class="command-block">
+                            <code>git status</code>
+                            <div class="command-desc">Check working tree status</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 4rem; font-size: 1.8rem; color: var(--primary);">Git Workflow</h3>
+                <div class="timeline">
+                    <div class="timeline-item fade-in">
+                        <h4>1. Clone or Initialize</h4>
+                        <p style="color: var(--text-dim);">Start by cloning an existing repository or initializing a new one in your project directory.</p>
+                    </div>
+                    <div class="timeline-item fade-in">
+                        <h4>2. Create a Branch</h4>
+                        <p style="color: var(--text-dim);">Create a new branch for your feature or bug fix to keep your work isolated from the main codebase.</p>
+                    </div>
+                    <div class="timeline-item fade-in">
+                        <h4>3. Make Changes</h4>
+                        <p style="color: var(--text-dim);">Write code, edit files, and make your changes. Use git status to track what's been modified.</p>
+                    </div>
+                    <div class="timeline-item fade-in">
+                        <h4>4. Stage & Commit</h4>
+                        <p style="color: var(--text-dim);">Stage your changes with git add, then commit them with a descriptive message about what you changed.</p>
+                    </div>
+                    <div class="timeline-item fade-in">
+                        <h4>5. Push to Remote</h4>
+                        <p style="color: var(--text-dim);">Push your branch to the remote repository so others can see your work and collaborate.</p>
+                    </div>
+                    <div class="timeline-item fade-in">
+                        <h4>6. Create Pull Request</h4>
+                        <p style="color: var(--text-dim);">Open a pull request to merge your changes into the main branch after review and approval.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GitHub Section -->
+        <section id="github" style="background: rgba(0, 212, 255, 0.02);">
+            <div class="container">
+                <h2>GitHub Platform</h2>
+                <p style="color: var(--text-dim); max-width: 900px; font-size: 1.1rem; margin-bottom: 3rem;">
+                    GitHub is the world's leading platform for version control and collaboration. It provides a web-based interface for Git repositories along with powerful features for team collaboration, code review, and project management.
+                </p>
+
+                <div class="cards-grid">
+                    <div class="card fade-in">
+                        <div class="card-icon">🔗</div>
+                        <h3>Collaboration Features</h3>
+                        <ul>
+                            <li><strong>Pull Requests</strong> - Propose and review code changes</li>
+                            <li><strong>Issues</strong> - Track bugs and feature requests</li>
+                            <li><strong>Projects</strong> - Organize and prioritize work</li>
+                            <li><strong>Discussions</strong> - Community conversations</li>
+                            <li><strong>Code Review</strong> - Inline comments and suggestions</li>
+                        </ul>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">⚙️</div>
+                        <h3>GitHub Actions</h3>
+                        <p>Automate your workflow with CI/CD pipelines directly in GitHub. Build, test, and deploy your code automatically on every push or pull request.</p>
+                        <ul style="margin-top: 1rem;">
+                            <li>Automated testing on every commit</li>
+                            <li>Deploy to production on merge</li>
+                            <li>Schedule periodic tasks</li>
+                            <li>Custom workflows with YAML</li>
+                        </ul>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">🛡️</div>
+                        <h3>Security & Access</h3>
+                        <ul>
+                            <li><strong>Branch Protection</strong> - Enforce review rules</li>
+                            <li><strong>Security Alerts</strong> - Vulnerability detection</li>
+                            <li><strong>Dependabot</strong> - Automated dependency updates</li>
+                            <li><strong>Code Scanning</strong> - Find security issues</li>
+                            <li><strong>Secret Scanning</strong> - Detect exposed credentials</li>
+                        </ul>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">📦</div>
+                        <h3>Advanced Features</h3>
+                        <ul>
+                            <li><strong>GitHub Pages</strong> - Host static websites</li>
+                            <li><strong>GitHub Packages</strong> - Package hosting</li>
+                            <li><strong>Codespaces</strong> - Cloud development environment</li>
+                            <li><strong>Copilot</strong> - AI-powered code suggestions</li>
+                            <li><strong>Wiki</strong> - Project documentation</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 4rem; font-size: 1.8rem; color: var(--secondary);">Git vs GitHub</h3>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Git</th>
+                                <th>GitHub</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Type</strong></td>
+                                <td>Version control system (software)</td>
+                                <td>Web-based hosting platform</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Purpose</strong></td>
+                                <td>Track and manage code changes locally</td>
+                                <td>Host repositories and enable collaboration</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Installation</strong></td>
+                                <td>Installed on your computer</td>
+                                <td>Cloud-based service, accessed via browser</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Key Features</strong></td>
+                                <td>Commits, branches, merges, version history</td>
+                                <td>Pull requests, issues, actions, code review</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Usage</strong></td>
+                                <td>Command-line or GUI tools</td>
+                                <td>Web interface + Git commands</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Collaboration</strong></td>
+                                <td>Local version control</td>
+                                <td>Team collaboration and social coding</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Best Practices Section -->
+        <section style="background: rgba(0, 255, 136, 0.02);">
+            <div class="container">
+                <h2>Best Practices</h2>
+                <div class="cards-grid">
+                    <div class="card fade-in">
+                        <div class="card-icon">✅</div>
+                        <h3>Commit Best Practices</h3>
+                        <ul>
+                            <li>Write clear, descriptive commit messages</li>
+                            <li>Make small, focused commits</li>
+                            <li>Commit early and often</li>
+                            <li>Use present tense in messages</li>
+                            <li>Review changes before committing</li>
+                        </ul>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">🌿</div>
+                        <h3>Branch Strategy</h3>
+                        <ul>
+                            <li>Use descriptive branch names</li>
+                            <li>Keep main/master branch stable</li>
+                            <li>Create feature branches for new work</li>
+                            <li>Delete merged branches</li>
+                            <li>Rebase for clean history</li>
+                        </ul>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">🔒</div>
+                        <h3>Security Practices</h3>
+                        <ul>
+                            <li>Never commit sensitive data</li>
+                            <li>Use .gitignore effectively</li>
+                            <li>Enable two-factor authentication</li>
+                            <li>Review code before merging</li>
+                            <li>Keep dependencies updated</li>
+                        </ul>
+                    </div>
+
+                    <div class="card fade-in">
+                        <div class="card-icon">🤝</div>
+                        <h3>Team Collaboration</h3>
+                        <ul>
+                            <li>Use pull requests for code review</li>
+                            <li>Document your code and changes</li>
+                            <li>Communicate with your team</li>
+                            <li>Follow project conventions</li>
+                            <li>Test before pushing changes</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 DevOps Hub. Master the tools that power modern software development.</p>
+            <p style="margin-top: 1rem; opacity: 0.7;">AWS • DevOps • Git • GitHub</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards that don't have fade-in class yet
+        document.querySelectorAll('.card:not(.fade-in), .timeline-item:not(.fade-in)').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
