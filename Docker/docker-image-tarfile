@@ -1,0 +1,2 @@
+docker save myapp:v1 > myapp_v1.tar
+aws s3 cp myapp_v1.tar s3://devops-artifacts-kanak/
